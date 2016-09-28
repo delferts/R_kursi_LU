@@ -42,7 +42,7 @@ output:
 
 * Grūti izsekot līdzi visām papildus paketēm
 
-* Ne vienmēr var ātri atrast nepieviešamo
+* Ne vienmēr var ātri atrast nepieciešamo
 
 
 ## R popularitāte
@@ -184,7 +184,7 @@ citation()
 Ja izmantota kāda papildus pakete, tad jānorāda atsauce arī uz to.
 
 ```{r}
-citation("lme4")
+citation("readxl")
 ```
 
 ## Interaktīva R macīšanās
@@ -357,5 +357,3 @@ Objekta dzēšana
 ```{r}
 rm(dati)
 ```
-
-  
