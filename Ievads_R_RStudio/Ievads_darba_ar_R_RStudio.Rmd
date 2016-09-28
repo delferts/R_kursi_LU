@@ -1,0 +1,357 @@
+---
+title: "Ievads darbā ar R un RStudio"
+author: "Didzis Elferts"
+output:
+  ioslides_presentation:
+    css: ../Dazadi/style.css
+    highlight: tango
+    widescreen: yes
+---
+
+## Lekcijas tēmas
+
+- Par programmu R
+
+- Komandu veidošana
+
+- Datu importēšana
+
+- Darbs ar datiem
+
+## R priekšrocības
+
+* Atvērtā koda programma, kas nepārtraukti tiek papildināta un uzlabota
+
+* R var tikt izmantots uz dažādām platformām: Linux, Windows, MacOS
+
+* Lielākā daļa statistisko metožu un aprēķinu ir iekļauts šajā programmā
+
+* Lietotājam ir iespējams kontrolēt visus parametrus veicot aprēķinus
+
+* Ļoti labas grafiskās iespējas, kas ļauj veidot augstas kvalitātes grafikus
+
+* Iespēja veidot pašam savas funkcijas
+
+* Var nodrošināt reproducējamību (reproducible)
+
+## R trūkumi
+
+* Lēns "mācīšanās" temps
+
+* Daļējs trūkums - komandu rindas
+
+* Grūti izsekot līdzi visām papildus paketēm
+
+* Ne vienmēr var ātri atrast nepieviešamo
+
+
+## R popularitāte
+
+```{r popkopa,echo=FALSE}
+library(png)
+library(grid)
+saite <- "http://i0.wp.com/r4stats.com/wp-content/uploads/2012/04/Fig_2d_ScholarlyImpact.png"
+z <- tempfile()
+download.file(saite,z,mode="wb")
+img <- readPNG(z)
+grid.raster(img)
+```
+
+Avots: http://r4stats.com/articles/popularity/
+
+
+## Popularity of R in ecology {.smaller}
+
+```{r popeko,echo=FALSE,warning=FALSE,message=FALSE}
+saite <- "https://pbs.twimg.com/media/CqIpwwHWAAAjmqF.jpg:large"
+z <- tempfile()
+download.file(saite,z,mode="wb")
+library(jpeg)
+img <- readJPEG(z)
+#img <- readPNG("Atteli/eco_r.png")
+grid.raster(img)
+```
+
+Avots: http://onlinelibrary.wiley.com/doi/10.1002/ecs2.1394/full
+
+Touchon, J.C., McCoy, M.W., 2016. The mismatch between current statistical practice and doctoral training in ecology. Ecosphere, 7 (8).
+
+
+## Piemērs darbā ar R
+
+Izveidojiet Excel failu, kurā ir divas kolonnas - Garums un Svars, ierakstiet šajās kolonnās izgudrotas 5-10 rindiņas. Saglabājiet šo failu ar nosaukumu Cilveki.xlsx direktorijā My documents (Mani dokumenti)
+
+## Piemērs darbā ar R
+
+```{r,eval=FALSE}
+library(readxl)
+dati <- read_excel("Cilveki.xlsx")
+dati
+```
+```{r,echo=FALSE}
+library(readxl)
+dati <- read_excel("../Dati/Cilveki.xlsx")
+dati
+```
+
+
+
+
+
+## Piemērs
+```{r}
+cor.test(dati$Garums,dati$Svars)
+```
+
+## Piemērs
+```{r}
+summary(lm(Svars~Garums,data=dati))
+```
+
+## Piemērs
+```{r piemers}
+plot(dati$Svars~dati$Garums)
+abline(lm(Svars~Garums,data=dati))
+```
+
+## Komandu veidošana
+
+* Lai komandu rindai pievienotu komentāru, pirms tā ir jāraksta “#”
+
+* Atstarpes komandās parasti tiek ignorētas, izņēmums ir rakstot “<-”
+
+* Ja komanda ir pārāk gara, tad to var sadalīt vienkārši ar Enter taustiņu
+
+* Iztrūkstošās vērtības programmā R apzīmē ar NA
+
+
+
+## Palīdzības iegūšana
+
+```{r eval=FALSE}
+help.start()
+
+help(plot)
+```
+```{r}
+args(cor)
+```
+```{r eval=FALSE}
+example(plot)
+```
+Mājaslapā:
+
+http://www.rdocumentation.org/
+
+
+## R paketes
+
+* Bāzes R programmā ir tikai neliela daļa no iespējām, ko piedāvā R
+
+* Papildus iespējas (funkcijas) pieejamas kā paketes (library), kuras no sākuma jāuzinstalē (ja tas jau nav izdarīts) un tad jāpievieno (tas jādara katrā sesijā)
+
+* Pakešu instalācija notiek ar funkciju `install.packages()`, bet pievienošana darba sesijai ar funkciju `library()`.
+
+```{r,eval=FALSE}
+instal.packages("ggplot2")
+library(ggplot2)
+```
+
+
+## R kā kalkulators
+
+R var tikt izmantots kā vienkāršs kalkulators
+```{r}
+4+7
+log(8,2)
+exp(2)
+```
+
+## R citēšana
+
+Ja datu analīzei izmanto R/RStudio, tad darbā obligāti jānorāda atsauce uz programmu R (arī tad, kad izmantojat RStudio, reāli strādājat ar R). Tekstā jānorāda arī R versija.
+
+```{r}
+citation()
+```
+
+## R citēšana
+
+Ja izmantota kāda papildus pakete, tad jānorāda atsauce arī uz to.
+
+```{r}
+citation("lme4")
+```
+
+## Interaktīva R macīšanās
+
+Izmantojot paketi `swirl` ir iespējams interaktīvi mācīties strādāt programmā R (angļu valodā)
+
+```{r,eval=FALSE}
+library(swirl)
+```
+
+
+## Datu importēšana
+
+* Bāzes R piedāvā iespējas importēt .txt, .csv un citus ASCI tipas datus
+
+* Izmantojot papildus paketes iespējams importēt ļoti daudzus citus datu formātus - Excel, SPSS, SAS, json, utt
+
+## Datu importēšana
+
+```{r eval=FALSE}
+read.table(file=”/../faila.nosaukums.txt”, header=TRUE, sep=”\t”,dec=”.”)
+```
+Kolonnu atdalītāja `sep=` vērtības var būt: `”\t”` `” , ”` `” ; ”`
+
+Decimāldaļu atdalītājs failā `dec=` varbūt `”.”` vai `”,”`
+
+Pēc noklusējuma visas teksta kolonnas tiek pārvērstas par faktoriem. To var novērst pievienojot argumentu `stringsAsFactors=FALSE`.
+
+Garo saiti uz failu var nerakstīt, ja fails atrodas darba direktorijā (Working directory)
+(var nomainīt ar `File/Change dir...`)
+
+
+
+## Darba direktorija
+
+```{r}
+getwd()
+```
+```{r,eval=FALSE}
+setwd("/Users/didzis/Documents")
+```
+
+## Datu importēšana
+
+```{r,eval=FALSE}
+dati <- read.table(file="niedres.txt",header=T, 
+                   sep="\t", dec=".")
+dati2 <- read.csv2(file="niedres.txt",header=T, 
+                   sep="\t", dec=".")
+```
+```{r,echo=FALSE}
+dati <- read.table(file="../Dati/niedres.txt",header=T, 
+                   sep="\t", dec=".")
+dati2 <- read.csv2(file="../Dati/niedres.txt",header=T, 
+                   sep="\t", dec=".")
+```
+```{r}
+dati
+```
+
+## Datu importēšana - iebūvētie dati
+
+```{r eval=FALSE}
+data()
+```
+
+## Datu importēšana - iebūvētie dati
+
+```{r}
+data(cars)
+head(cars)
+```
+
+## Datu eksportēšana
+
+Datus, kas izveidoti R kā datu tabulas, visērtāk var eksportēt kā `.txt` vai `.csv` failus.
+```{r eval=FALSE}
+write.table(x=tas.kas.jaeksporte, 
+  file="/saite/uz/failu/failanosaukums.txt",
+  sep="\t",dec=".")
+```
+
+```{r eval=FALSE}
+write.table(x=dati, file="eksports.txt",sep="\t",dec=".")
+```
+
+Eksportējot pēc noklusējuma tiek eksportēti arī rindiņu nosaukumi. Ja tos nevajag, tad jāpievieno arguments `row.names=FALSE`
+
+
+## Lietas, kas jāatceras
+
+* Programmā R visi radītie, importētie objekti atrodas operatīvajā atmiņā (ja neizmanto specializētas pieejas)
+
+* Ja neizmanto speciālas paketes, tad R darbībām tiek izmantots tikai viens datora procesors
+
+
+## Datu veidi
+
+* Skaitliski (numeric), piemēram, 1, 5, 2.6, -123.45
+
+* Rakstu zīmes (character), piemēram, AA, zaļš, mētrājs
+
+* Loģiski (logical) - TRUE un FALSE
+
+
+
+## Datu struktūras
+
+* Vektors (vector)
+
+* Matrice (matrix)
+
+* Saraksts (list)
+
+* Datu rāmis/tabula (data frame)
+
+* Datu tabula (data table)
+
+* u.c.
+
+
+## Datu atlasīšana – datu tabula
+
+```{r}
+dati$garums
+dati["garums"]
+```
+
+## Datu atlasīšana – datu tabula
+
+Otrais indekss kvadrātiskajās iekavās nozīmē kolonnas numuru.
+
+```{r}
+dati[,1]
+dati[,1,drop=FALSE]
+```
+
+## Datu atlasīšana – datu tabula
+
+Pirmais indekss kvadrātiskajās iekavās nozīmē rindas numuru.
+
+```{r}
+dati[1,]
+dati[c(2,5),]
+dati[1:3,]
+```
+
+
+
+## Darbs ar datiem
+
+```{r eval=FALSE}
+garums
+```
+```{r eval=FALSE}
+Error: object 'garums' not found
+```
+
+Programmā R datu tabulu kolonnas automātiski netiek uzskatītas par atsevišķiem mainīgiem
+
+
+## Darba vides sakārtošana
+
+Atmiņā esošo objektu apskatīšana
+```{r}
+ls()
+```
+
+Objekta dzēšana
+```{r}
+rm(dati)
+```
+
+  
