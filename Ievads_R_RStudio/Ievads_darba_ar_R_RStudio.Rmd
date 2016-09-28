@@ -42,7 +42,7 @@ output:
 
 * Grūti izsekot līdzi visām papildus paketēm
 
-* Ne vienmēr var ātri atrast nepieviešamo
+* Ne vienmēr var ātri atrast nepieciešamo
 
 
 ## R popularitāte
