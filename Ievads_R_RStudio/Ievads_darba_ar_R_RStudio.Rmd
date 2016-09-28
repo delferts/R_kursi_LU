@@ -184,7 +184,7 @@ citation()
 Ja izmantota kāda papildus pakete, tad jānorāda atsauce arī uz to.
 
 ```{r}
-citation("lme4")
+citation("readxl")
 ```
 
 ## Interaktīva R macīšanās
