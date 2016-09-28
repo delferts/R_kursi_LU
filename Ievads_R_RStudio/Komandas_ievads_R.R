@@ -38,7 +38,7 @@ exp(2)
 # Citesana
 
 citation()
-citation("lme4")
+citation("readxl")
 
 # Interaktiva R macisanas
 
