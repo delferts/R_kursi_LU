@@ -1,6 +1,7 @@
 # Ievads darba ar R un RStudio
 
 # Piemers
+if (!require("readxl") )  install.packages("readxl")
 library(readxl)
 dati <- read_excel("../Dati/Cilveki.xlsx")
 dati
