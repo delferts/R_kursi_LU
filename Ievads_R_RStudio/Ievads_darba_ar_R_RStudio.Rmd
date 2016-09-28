@@ -48,6 +48,7 @@ output:
 ## R popularitāte
 
 ```{r popkopa,echo=FALSE}
+if (!require("png") )  install.packages("png")
 library(png)
 library(grid)
 saite <- "http://i0.wp.com/r4stats.com/wp-content/uploads/2012/04/Fig_2d_ScholarlyImpact.png"
@@ -63,6 +64,7 @@ Avots: http://r4stats.com/articles/popularity/
 ## Popularity of R in ecology {.smaller}
 
 ```{r popeko,echo=FALSE,warning=FALSE,message=FALSE}
+if (!require("jpeg") )  install.packages("jpeg")
 saite <- "https://pbs.twimg.com/media/CqIpwwHWAAAjmqF.jpg:large"
 z <- tempfile()
 download.file(saite,z,mode="wb")
@@ -84,11 +86,13 @@ Izveidojiet Excel failu, kurā ir divas kolonnas - Garums un Svars, ierakstiet �
 ## Piemērs darbā ar R
 
 ```{r,eval=FALSE}
+if (!require("readxl") )  install.packages("readxl")
 library(readxl)
 dati <- read_excel("Cilveki.xlsx")
 dati
 ```
 ```{r,echo=FALSE}
+if (!require("readxl") )  install.packages("readxl")
 library(readxl)
 dati <- read_excel("../Dati/Cilveki.xlsx")
 dati
