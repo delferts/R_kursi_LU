@@ -99,6 +99,15 @@ dati
 ```
 
 
+## Programmas 
+
+Programmu R var lejupielādēt no mājaslapas https://www.r-project.org, izraugoties CRAN serveri un savai operētājsistēmai atbilstošo versiju.
+
+Programmas RStudio bezmaksas versiju var lejupielādēt:
+
+* jaunākā stabilā versija https://www.rstudio.com/products/rstudio/download/
+
+* jaunākā izstrādes versija https://www.rstudio.com/products/rstudio/download/preview/
 
 
 
