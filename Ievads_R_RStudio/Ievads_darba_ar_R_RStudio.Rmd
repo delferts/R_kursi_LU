@@ -47,7 +47,7 @@ output:
 
 ## R popularitāte
 
-```{r popkopa,echo=FALSE}
+```{r popkopa,echo=FALSE,warning=FALSE,message=FALSE}
 if (!require("png") )  install.packages("png")
 library(png)
 library(grid)
@@ -166,7 +166,7 @@ http://www.rdocumentation.org/
 * Pakešu instalācija notiek ar funkciju `install.packages()`, bet pievienošana darba sesijai ar funkciju `library()`.
 
 ```{r,eval=FALSE}
-instal.packages("ggplot2")
+install.packages("ggplot2")
 library(ggplot2)
 ```
 
