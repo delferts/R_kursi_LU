@@ -4,7 +4,7 @@
 
 
 * [Ievads darbā ar R un RStudio](/Ievads_R_RStudio)
-* Pamatstatistiskie testi programmā R
+* [Pamatstatistiskie testi programmā R](/Pamatstatistiskie_testi_R)
 * RCommander
 * Ievads ggplot2 grafiskajā sistēmā
 
