@@ -1,0 +1,798 @@
+---
+title: "Pamatstatistiskie testi programmā R"
+author: "Didzis Elferts"
+output:
+  ioslides_presentation:
+    css: ../Dazadi/style.css
+    highlight: tango
+    widescreen: yes
+---
+
+## Lekcijas tēmas
+
+* Statistiskie rādītāji
+
+* Paraugkopu salīdzināšana
+
+* Korelācijas analīze
+
+* Regresijas analīze
+
+* Dispersijas analīze
+
+
+# Statistiskie rādītāji
+
+## Dati
+
+```{r}
+niedr<-read.table(file="../Dati/niedres2.txt",header=TRUE,sep="\t",dec=".")
+```
+
+```{r,comment=NA}
+str(niedr)
+```
+
+
+
+## Statistiskie rādītāji 1 {.smaller}
+
+Vidējo aritmētisko, standartnovirzi, dispersiju un mediānu aprēķina attiecīgi ar funkcijām `mean()`, `sd()`, `var()` un `median()`. Visām šīm funkcijām kā arguments jānorāda skaitļu vektors/viena kolonna.
+
+```{r ,comment=NA}
+mean(niedr$garums)
+sd(niedr$garums)
+var(niedr$garums)
+median(niedr$garums)
+```
+
+## Statistiskie rādītāji 2
+
+Skaitļu noapaļošanai izmanto funkciju `round()`, kurā norāda vienu skaitli, vai objektu ar vairākiem skaitļiem un decimāldaļu skaitu aiz komata.
+
+```{r,comment=NA}
+round(mean(niedr$garums),1)
+```
+
+## Statistiskie rādītāji 3
+
+```{r,comment=NA}
+x <- c(1:20,NA)
+mean(x)
+mean(x,na.rm=TRUE)
+```
+
+Daudzas funkcijas R dod rezultātu NA, ja kāda no apstrādājamām vērtībām arī ir NA. Tāpēc jānorāda, ko darīt ar šīm NA vērtībām.
+
+
+## Statistiskie rādītāji 4
+
+Minimālo un maksimālo vērtību aprēķina ar funkcijām `min()` un `max()`, vai arī ar funkciju `range()` var aprēķināt abas vērtības uzreiz.
+
+```{r ,comment=NA}
+min(niedr$garums)
+max(niedr$garums)
+range(niedr$garums)
+```
+
+## Statistiskie rādītāji 5
+
+Kvartiles aprēķina ar funkciju `quantile()`. Ja nepieciešams aprēķināt procentiles, vai arī tikai kādu no kvartilēm, tad papildus norāda argumentu `probs=` un vajadzīgo rādītāju izteiktu decimāldaļās.
+
+```{r,comment=NA}
+quantile(niedr$garums)
+quantile(niedr$garums,probs=c(0.025,0.975))
+```
+
+## Statistiskie rādītāji 6
+
+Ja funkcijā `summary()` ievieto skaiļu vektoru, rezultātā iegūst sešus statistiskos rādītājus, kas to raksturo. 
+
+```{r,comment=NA}
+summary(niedr$garums)
+```
+
+## Statistiskie rādītāji 7
+
+Ja funkcijā `summary()` ievieto datu tabulu, rezultātā katrai skaitliskajai kolonnai iegūst sešus statistiskos rādītājus, bet faktoram/rakstu zīmju kolonnai iegūst vērtību atkārošanās biežumu. 
+
+```{r,comment=NA}
+summary(niedr)
+```
+
+# Paraugkopu salīdzināšana
+
+## Dati 1
+
+```{r}
+niedr2<-read.table(file="../Dati/lapas.txt", header=TRUE,sep="\t",dec=".")
+```
+```{r,comment=NA}
+str(niedr2)
+```
+
+
+
+## Dispersiju salīdzināšana 1
+
+Dispersiju salīdzināšanu ar F testu veic izmantojot funkciju `var.test()`.
+
+```{r, eval=FALSE}
+var.test(pirmā.paraugkopa,otrā.paraugkopa)
+
+var.test(datu.kolonna~grupu.kolonna)
+```
+
+
+## Dispersiju salīdzināšana 2
+
+```{r,comment=NA}
+var.test(niedr2$garums~niedr2$paraug)
+```
+
+
+## Dispersiju salīdzināšana 3
+
+**Secinājums:** Pie būtiskuma līmeņa $\alpha=0,05$ divu paraugkopu dispersijas ir
+homogēnas (neatšķiras būtiski), jo iegūtā F-vērtība ir 0,89 un p-vērtība ir
+0,827 (lielāka par 0,05). Ja skatās uz F vērtības ticamības intervālu, tad tas satur skaitli
+viens (0,32 līdz 2,47), tātad dispersijas ir līdzīgas (homogēnas).
+
+
+
+## Vidējo aritmētisko salīdzināšana 1
+
+Vidējo aritmētisko salīdzināšanai izmanto funkciju `t.test()`. Ja pirms tam pierādīts, ka dispersijas neatšķiras, tad jāpievieno arguments `var.equal=TRUE`.
+
+```{r eval=FALSE}
+t.test(datu.kolonna~grupu.kolonna,var.equal=TRUE)
+
+t.test(paraugkopa1,paraugkopa2,var.equal=TRUE)
+```
+
+
+## Vidējo aritmētisko salīdzināšana 2
+
+```{r,comment=NA}
+t.test(niedr2$garums~niedr2$paraug,var.equal=TRUE)
+```
+
+
+## Vidējo aritmētisko salīdzināšana 3
+
+**Secinājums:** Pie būtiskuma līmeņa $\alpha=0,05$ pastāv statistiski būtiska
+atšķirība starp Austrumu un Rietumu parauglaukumu vidējiem niedru lapu
+garumiem (p-vērtība=0,022). Vidējo aritmētisko starpības 95% ticamības
+intervāls ir no -13,89 līdz -1,15. Intervāls nesatur 0 (ja satūrētu 0, tad tas norādītu, ka atšķirība nav būtiska).
+
+
+
+## Saistītu paraugkopu vidējo aritmētisko salīdzināšana 1
+
+Saistītu vai atkarīgu paraugkopu vidējo aritmētisko salīdzināšanu veic ar funkciju `t.test()`, kurai papildus iekļauj argumentu `paired=TRUE`. Šī testa veikšanai abu paraugkopu datiem parasti jāatrodas katrai savā kolonnā.
+
+```{r eval=FALSE}
+t.test(x,y,paired=TRUE)
+```
+
+
+## Saistītu paraugkopu vidējo aritmētisko salīdzināšana 2
+
+```{r}
+rokas <- read.table(file="../Dati/rokas.txt",header=TRUE,sep="\t",dec=".")
+```
+```{r,comment=NA}
+str(rokas)
+```
+
+
+## Saistītu paraugkopu vidējo aritmētisko salīdzināšana 3
+
+```{r,comment=NA}
+t.test(rokas$laba,rokas$kreisa,paired=TRUE)
+```
+
+
+## Saistītu paraugkopu vidējo aritmētisko salīdzināšana 4
+
+**Secinājums:** Pie būtiskuma līmeņa $\alpha = 0,05$ pastāv statistiski būtiska
+atšķirība starp labās un kreisās rokas spēku (p-vērtība <0,001). Vidējā
+pāru starpība ir 4,48 un tās 95% ticamības intervāls ir no 2,41 līdz 6,54.
+
+
+
+## T-tests vienai paraugkopai 1
+
+Lai pārbaudītu vienas paraugkopas vērtību atbilstību zināmai vērtībai (ģenerālkopas vidējam aritmētiskajam), izmanto funkciju `t.test()`, kurai kā papildus argumentu norāda zināmo vērtību `mu=`.
+```{r, eval=FALSE}
+t.test(analizējamā.paraugkopa,mu=zināmā.vērtība)
+```
+
+
+## T-tests vienai paraugkopai 2
+
+```{r,comment=NA}
+t.test(niedr2$platums,mu=3.0)
+```
+
+
+## T-tests vienai paraugkopai 3
+
+**Secinājums:** pie būtiskuma līmeņa $\alpha = 0,05$ niedru lapu platums pētītajā
+teritorijā būtiski atšķiras no vērtības 3 mm (p vērtība ir 0,015). Niedru
+lapu platumu vidējais aritmētiskais ir 3,68 un tā 95% ticamības intervāls ir no 3,14 līdz 4,22 (nesatur vērtību 3,0).
+
+
+
+## Neparametriskās metodes - neatkarīgas paraugkopas 1
+
+Neatkarīgu paraugkopu salīdzināšanai ar neparametriskajām metodēm izmanto funkciju `wilcox.test()`.
+
+```{r, eval=FALSE}
+wilcox.test(datu.kolonna~grupu.kolonna)
+
+wilcox.test(pirma.paraugkopa,otra.paraugkopa)
+```
+
+
+## Neparametriskās metodes - neatkarīgas paraugkopas 2
+
+```{r,comment=NA}
+wilcox.test(niedr2$garums~niedr2$paraug)
+```
+
+
+## Neparametriskās metodes - neatkarīgas paraugkopas 3
+
+**Secinājums:** Pie būtiskuma līmeņa $\alpha = 0,05$ starp Austrumu un Rietumu
+parauglaukumu niedru lapu garumu vērtību sadalījumiem pastāv statistiski būtiska
+atšķirība (p vērtība 0,017).
+
+
+
+## Neparametriskās metodes - atkarīgas paraugkopas 1
+
+Saistītu vai atkarīgu paraugkopu vērtību sadalījuma salīdzināšanu veic ar funkciju `wilcox.test()`, kurai papildus iekļauj argumentu `paired=TRUE`. Šī testa veikšanai abu paraugkopu datiem parasti jāatrodas katram savā kolonnā.
+
+```{r eval=FALSE}
+wilcox.test(pirma.paraugkopa,otra.paraugkopa, paired=TRUE)
+```
+
+
+## Neparametriskās metodes - atkarīgas paraugkopas 2
+
+```{r,comment=NA}
+wilcox.test(rokas$laba,rokas$kreisa,paired=TRUE)
+```
+
+
+## Neparametriskās metodes - atkarīgas paraugkopas 3
+
+**Secinājums:** Pie būtiskuma līmeņa $\alpha = 0,05$ pastāv statistiski būtiska
+atšķirība starp labās un kreisās rokas spēka vērtību sadalījumu (p-vērtība 0,0005).
+
+
+
+## $\chi^2$  tests 1
+
+$\chi^2$ testa veikšanai izmanto funkciju `chisq.test()`, kurai kā argumentus norāda empīrisko vērtību sadalījumu un sagaidāmo vērtību sadalījumu (kā iespējamības vērtības), ja jāsalīdzina ar teorētisko sadalījumu, vai arī matrici, kas satur divu paraugkopu vērtību sadalījumus, ja jāsalīdzina divas paraugkopas.
+
+```{r eval=FALSE}
+chisq.test(empir.sad.vektors,teor.sad.vektors)
+chisq.test(vertibu.matrice)
+```
+
+
+## $\chi^2$  tests 2
+
+```{r,comment=NA}
+zirni <- c(315, 108, 101, 32)
+#dala ar vērtību summu (16), lai iegūtu iespējamības vērtības
+teor.zirni <- c(9, 3, 3, 1)/16 
+
+chisq.test(x = zirni, p = teor.zirni)
+```
+
+
+## $\chi^2$  tests 3
+
+**Secinājums:** Pētījumā iegūto zirņu pazīmju skaldīšanās atbilst teorētiski
+sagaidāmajai pazīmju skaldīšanās attiecībai 9:3:3:1, jo iegūtā p vērtība (0,9254) ir lielāka par būtiskuma līmeni 0,05.
+
+
+
+## $\chi^2$  tests 4
+
+```{r,comment=NA}
+koki<-matrix(c(12,34,56,23,8,27,33,47,14,11),ncol=2)
+
+rownames(koki) <- c("Priede","Egle","Bērzs","Ozols","Kļava")
+colnames(koki) <- c("Paraug A","Paraug B")
+
+koki
+```
+
+
+## $\chi^2$ tests 5
+
+```{r,comment=NA}
+chisq.test(koki)
+```
+**Secinājums:** Pie būtiskuma līmeņa $\alpha = 0,05$ nav statistiski būtiskas
+atšķirības starp koku sugu sadalījumu divos parauglaukumos (p-vērtība
+0,056). Tomēr būtu jāņem vērā, ka p-vērtība ir tuvu kritiskajai robežai.
+Iespējams, ka palielinot datu apjomu, atšķirība jau būtu būtiska.
+
+
+# Korelācijas analīze
+
+## Funkcijas analīzes veikšanai
+
+Pamatfunkcijas korelācijas analīzes veikšanai ir `cor()` un `cor.test()`. 
+
+Pirmajā funkcijā var likt gan atsevišķus vektorus (kolonnas), gan vienu vai divas vienāda garuma datu tabulas. Otrajā funkcijā var likt tikai divus vektorus (kolonnas), starp kurām jāaprēķina korelācijas koeficients.
+
+Pēc noklusējuma abas funkcijas aprēķina Pīrsona korelācijas koeficientu. Ja nepieciešams cits, tad attiecīgi jāpievieno arguments `method="kendall"` vai `method="spearman"`.
+
+Ja datos ir iztrūkstošās vērtības (NA), pievieno argumentu `use="pairwise.complete.obs"`.
+
+
+
+## Dati
+
+```{r}
+smiltaji <- read.table(file="../Dati/smiltaji.txt",header=TRUE,sep="\t",dec=".")
+```
+```{r,comment=NA}
+str(smiltaji)
+```
+
+
+
+## Grafiskā analīze
+
+```{r,eval=FALSE}
+pairs(smiltaji)
+```
+
+```{r 6n_pairs,echo=FALSE,fig.align='center',fig.height=5,fig.width=7}
+par(ps=15,mar=c(3,3,3,3))
+pairs(smiltaji)
+```
+
+
+## Pīrsona korelācijas koeficients 1
+```{r,comment=NA}
+cor(smiltaji[,1:3])
+```
+
+Funkcijas `cor()` rezultātos ir redzama korelācijas koeficientu matrica, bet neparādās korelācijas koeficientu būtiskumi (p vērtības).
+
+
+## Pīrsona korelācijas koeficients 2
+
+Funkcijai `rcor.test()` arī ir iespējams pievienot argumentu `method=`.
+
+```{r,message=FALSE,comment=NA}
+if (!require("ltm") )  install.packages("ltm")
+library(ltm)
+rcor.test(smiltaji[,1:3])
+```
+
+**Secinājums:** statistiski būtiska korelācija pie būtiskumu līmeņa $\alpha=0,05$ pastāv starp pH un sūnu segumu un sūnu un smilts segumiem, jo atbilstošās p vērtības ir mazākas par būtiskuma līmeni.
+
+
+## Pīrsona korelācijas koeficients 3
+```{r,comment=NA}
+cor.test(smiltaji$pH,smiltaji$sunas)
+```
+
+**Secinājums:** Pastāv statistiski būtiska negatīva korelācija starp pH un sūnu segumu
+(-0,25), jo p vērtība ir mazāka par būtiskuma līmeni (0,032<0,05).
+
+
+
+## Spirmena korelācijas koeficients
+
+
+```{r,comment=NA}
+cor.test(smiltaji$sugas,smiltaji$smilts,method="spearman")
+```
+
+**Secinājums:** Pastāv statistiski būtiska negatīva korelācija starp sugu skaitu un smilts
+segumu (-0,29), jo p vērtība ir mazāka par būtiskuma līmeni (0,013<0,05).
+
+
+## Kendela korelācijas koeficients
+
+```{r,comment=NA}
+cor.test(smiltaji$sugas,smiltaji$smilts,method="kendall")
+```
+
+**Secinājums:** Pastāv statistiski būtiska negatīva korelācija starp sugu skaitu un smilts
+segumu (-0,23), jo p vērtība ir mazāka par būtiskuma līmeni (0,011<0,05).
+
+
+# Regresijas analīze
+
+## Regresijas analīzes funkcijas
+
+Regresijas analīzes veikšanai izmanto funkciju `lm()`, kurai kā argumentus norāda pārbaudāmo formulu (regresents~regresors), kā arī datu tabulu, kurā atrodas mainīgie.
+
+Regresijas analīzes rezultātu apskata ar funkciju `summary()`.
+
+```{r eval=FALSE}
+modelis <- lm(regresents~regresors,data=datu.tabula)
+
+summary(modelis)
+```
+
+
+## Dati
+
+```{r}
+bietes <- read.table(file = "../Dati/bietes.txt", header = TRUE)
+```
+```{r,comment=NA}
+str(bietes)
+summary(bietes)
+```
+
+
+
+## Pāru regresijas analīze {.smaller}
+
+```{r ,comment=NA}
+modelis <- lm(svars ~ udens, data = bietes)
+summary(modelis)
+```
+
+
+## Pāru regresijas analīzes secinājumi
+
+* Determinācijas koeficients Adjusted R-Squared = 0,712, tas ir, ūdens daudzums izskaidro 71,2% no svara vērtību variēšanas
+
+* Gan viss lineārās regresijas modelis kopumā, gan arī atsevišķi šī modeļa koeficienti ir būtiski, jo atbilstošās p-vērtības ir mazākas par būtiskuma līmeni
+
+* Lineārās regresijas vienādojums ir svars = 12,25+0,0269 x udens
+
+## Modeļa diagnostika 1
+
+Diagnosticējošos attēlos redzamas atlikuma vērtības pret prognozētajām vērtībām, atlikuma vērtību QQ attēls, kā arī attēls, kas parāda katra novērojuma ietekmi uz modeli (apakšējais labais attēls). Ja ietekmes attēlā kāds punkts atrodas aiz raustītās līnijas (Cook's distance virs 0,5), novērojums uzskatāms par ietekmīgu.
+
+```{r eval=FALSE}
+par(mfrow = c(2, 2))
+plot(modelis)
+par(mfrow = c(1, 1))
+```
+
+
+## Modeļa diagnostika 2
+
+```{r 7n_dig_bietes,echo=FALSE,fig.align='center',fig.height=5,fig.width=8}
+par(ps=15,mar=c(5,5,3,3))
+par(mfrow = c(2, 2))
+plot(modelis)
+```
+
+
+## Vērtību prognozēšana 1
+
+Funkcija `coefficients()` no regresijas analīzes objekta paņem regresijas vienādojuma koeficientus.
+```{r,comment=NA}
+koef <- coefficients(modelis)
+koef
+udens2 <- 301
+raza2 <- koef[1] + koef[2] * udens2
+raza2
+```
+
+
+## Vērtību prognozēšana 2
+
+Vērtību prognozēšanai var izmantot funkciju `predict()`, kurai kā argumentus norāda izveidoto modeli, kā arī datu tabulu ar jaunajām vērtībām. Šajā tabulā jābūt identiskiem kolonnu nosaukumiem kā modelī izmantotajiem regresoriem.
+
+```{r,comment=NA}
+jaunidati <- data.frame(udens = 301)
+predict(modelis, jaunidati, interval = "confidence")
+```
+
+
+## Daudzfaktoru regresijas analīzes funkcijas
+
+Regresijas analīzes veikšanai izmanto funkciju `lm()`, kurai kā argumentus norāda pārbaudāmo formulu (regresents~regresors1+regresors2+..), kā arī datu tabulu, kurā atrodas mainīgie.
+
+Regresijas analīzes rezultātu apskata ar funkciju `summary()`.
+
+```{r eval=FALSE}
+modelis <- lm(regresents~regresors1+regresors2+regresors3+
+                ...+regresorsK,data=datu.tabula)
+
+summary(modelis)
+```
+
+
+## Dati 1
+
+```{r}
+dati <- read.table(file = "../Dati/renda.txt", header = TRUE)
+```
+
+```{r,comment=NA}
+str(dati)
+```
+
+
+## Dati 2
+
+```{r,comment=NA}
+summary(dati)
+```
+
+
+## Modeļa definēšana
+
+```{r eval=FALSE}
+modelis <- lm(hron ~ dec + jan + feb + mar, data = dati)
+
+summary(modelis)
+```
+
+
+## Regresijas rezultāts {.smaller}
+
+```{r, echo=FALSE, comment=NA}
+modelis <- lm(hron ~ dec + jan + feb + mar, data = dati)
+
+summary(modelis)
+```
+
+
+## Regresijas analīze - secinājumi
+
+* Regresijas modelis izskaidro 31,7% no vērtību variēšanas.
+
+* Modelis kopumā ir būtisks (p vērtība <0,001), bet atsevišķu faktoru (decembra un janvāra temperatūras) ietekme nav būtiska (p vērtības attiecīgi 0,1973 un 0,1473). 
+
+* Tā kā atsevišķu regresoru ietekme nav būtiska, var veidot vienkāršāku modeli.
+
+
+## Modeļa definēšana
+
+```{r eval=FALSE}
+modelis1 <- lm(hron ~ jan + feb + mar, data = dati)
+
+summary(modelis1)
+```
+
+
+## Regresijas rezultāts 
+
+```{r echo=FALSE,comment=NA}
+modelis1 <- lm(hron ~ jan + feb + mar, data = dati)
+
+summary(modelis1)
+```
+
+
+## Regresijas analīze - secinājumi
+
+* Regresijas modelis izskaidro 31,1% no vērtību variēšanas.
+
+* Modelis kopumā ir būtisks (p vērtība <0,001), bet janvāra temperatūru ietekme joprojām nav būtiska (p vērtība ir 0,0982). 
+
+* Tā kā atsevišķu regresoru ietekme nav būtiska, var veidot vienkāršāku modeli.
+
+
+## Modeļa definēšana
+
+```{r eval=FALSE}
+modelis2 <- lm(hron ~ feb + mar, data = dati)
+
+summary(modelis2)
+```
+
+
+## Regresijas rezultāts 
+
+```{r echo=FALSE,comment=NA}
+modelis2 <- lm(hron ~ feb + mar, data = dati)
+
+summary(modelis2)
+```
+
+
+## Regresijas analīze - secinājumi
+
+* 29,46% kopējās regresenta (hron) izkliedes izskaidrojama ar regresoru
+(feb un mar) lineāro ietekmi;
+
+* pēc Fišera kritērija F =17,7, p-vērtība<0.0001 lineārās regresijas
+modelis ir statistiski būtisks; 
+
+* lineārās regresijas vienādojums ir
+hron = 1,0491+0,0090 x feb+0,0148 x mar
+
+* pēc Stjūdenta kritērija visi koeficienti ir būtiski pie $\alpha = 0,05$.
+
+
+
+## Modeļu salīdzinājums
+
+```{r,comment=NA}
+anova(modelis,modelis2)
+```
+
+**Secinājums:** starp modeļiem nav statistiski būtiskas atšķirības (p vērtība 0,1114 lielāka par būtiskuma līmeni), tāpēc var izvēlēties vienkāršāko modeli.
+
+
+## Modeļa diagnostika
+
+```{r eval=FALSE}
+par(mfrow = c(2, 2))
+plot(modelis2)
+```
+
+```{r 7n_dig_final,echo=FALSE,fig.align='center',fig.height=4.5,fig.width=7}
+par(ps=15,mar=c(5,5,3,3))
+par(mfrow = c(2, 2))
+plot(modelis2)
+```
+
+
+# Dispersijas analīze
+
+## Dispersijas analīzes funkcijas
+
+Dispersijas analīzi programmā R veic ar funkciju `aov()`, vai arī kombinējot funkcijas `anova()` un `lm()`.
+
+```{r eval=FALSE}
+aov(pētāmā.pazīmē~faktors,data=datu.tabula)
+
+anova(lm(pētāmā.pazīmē~faktors,data=datu.tabula))
+```
+
+Lai analīze tiktu veikta pareizi, regresoram (x) ir jābūt izteiktam kā faktoram.
+
+
+
+## Dati 1
+
+```{r}
+miezi <- read.table(file = "../Dati/miezi.txt", header = TRUE,sep="\t",dec=".")
+```
+```{r,comment=NA}
+str(miezi)
+head(miezi)
+```
+
+## Dati 2
+
+```{r,comment=NA}
+summary(miezi)
+```
+
+
+## Vizuālais salīdzinājums
+
+```{r, eval=FALSE}
+boxplot(miezi$raza~miezi$skirne)
+```
+```{r 8n_box,echo=FALSE,fig.align='center',fig.height=5,fig.width=8}
+par(ps=15,mar=c(5,5,3,3))
+boxplot(miezi$raza~miezi$skirne)
+```
+
+
+## Pārveidošana par faktoru
+
+Lai pārbaudītu vai mainīgais tiek uztverts kā faktors, izmanto funkciju `is.factor()`. Lai mainīgo pārvērstu par faktoru, izmanto funkciju `as.factor()`.
+```{r,comment=NA}
+is.factor(miezi$skirne)
+miezi$skirne<-as.factor(miezi$skirne)
+is.factor(miezi$skirne)
+```
+
+
+## Dispersiju salīdzināšana
+
+Pirms dispersijas analīzes veikšanas grupu dispersijas salīdzina ar funkciju `leveneTest()`, kas atrodas paketē `car`.
+
+```{r,comment=NA,warning=FALSE,message=FALSE}
+if (!require("car") )  install.packages("car")
+library(car)
+leveneTest(y = miezi$raza, group = miezi$skirne)
+```
+
+**Secinājums:** pie būtiskuma līmenā $\alpha=0,05$ starp atsevišķu gradācijas klašu dispersijām nepastāv statistiski būtiska atšķirība jeb dispersijas ir homogēnas, jo iegūtā p vērtība (0,84) ir lielāka par būtiskuma līmeni.
+
+
+## Vienfaktora dispersijas analīze
+
+```{r,comment=NA}
+anov.miezi <- aov(raza~skirne,data=miezi)
+summary(anov.miezi)
+```
+**Secinājums:** pie būtiskuma līmenā $\alpha=0,05$ starp gradācijas klašu vidējiem aritmētiskajiem pastāv statistiski būtiska atšķirība jeb faktora šķirne ietekme uz ražu ir būtiska, jo iegūtā p vērtība (0,019) ir mazāka par būtiskuma līmeni.
+
+
+
+## Gradācijas klašu salīdzināšana
+
+```{r,comment=NA}
+TukeyHSD(anov.miezi)
+```
+**Secinājums:** pie būtiskuma līmenā $\alpha=0,05$ statistiski būtiska atšķirība pastāv starp 3. un 1. šķirnes ražu (p vērtība 0,015), bet starp 1. un 2., kā arī 2. un 3. šķirni atšķirība nav statistiski būtiska (p vērtības lielākas par 0,05).
+
+
+## Vidējo vērtību grafiskais attēlojums
+
+```{r eval=FALSE}
+if (!require("gplots") )  install.packages("gplots")
+library(gplots)
+plotmeans(miezi$raza ~ miezi$skirne,
+ connect=FALSE,xlab = "Kviešu šķirne",ylab = "Raža",
+ main = "Vidējās vērtības ar 95% ticamības intervālu")
+```
+
+```{r 8n_vid_sal,warning=FALSE,echo=FALSE,fig.align='center',fig.height=4,fig.width=7,warning=FALSE,message=FALSE}
+par(ps=15,mar=c(5,5,3,3))
+library(gplots)
+plotmeans(miezi$raza ~ miezi$skirne,
+ connect=FALSE,xlab = "Kviešu šķirne",
+ ylab = "Raža",
+ main = "Vidējās vērtības ar 95% ticamības intervālu")
+```
+
+
+## Dati
+
+```{r}
+soja <- read.table(file="../Dati/soja.txt",header=TRUE)
+```
+```{r,comment=NA}
+str(soja)
+head(soja)
+```
+
+
+## Datu pārbaude
+
+```{r,comment=NA}
+names(soja)
+is.factor(soja$gaisma)
+is.factor(soja$stress)
+```
+
+
+## Dispersiju salīdzināšana
+
+```{r,comment=NA}
+library(car)
+leveneTest(y=soja$lapas,group=soja$gaisma:soja$stress)
+```
+**Secinājums:** pie būtiskuma līmenā $\alpha=0,05$ starp atsevišķu gradācijas klašu dispersijām nepastāv statistiski būtiska atšķirība jeb dispersijas ir homogēnas, jo iegūtā p vērtība (0,9) ir lielāka par būtiskuma līmeni.
+
+
+## Daudzfaktoru dispersijas analīze 1
+
+Pieraksts faktors1*faktors2 nozīmē, ka pārbauda katra faktora ietekmi, kā arī faktoru kombinācijas ietekmi.
+```{r,comment=NA}
+modelis <- aov(lapas~gaisma*stress,data=soja)
+summary(modelis)
+```
+
+
+## Daudzfaktoru dispersijas analīze 2
+
+**Secinājums:** pie būtiskuma līmenā $\alpha=0,05$ sojas lapu laukumu būtiski ietekmē gaismas daudzums (p vērtība <0,0001) un stresa līmenis (p vērtība 0,0002), bet faktoru kombinācijas ietekme nav būtiska (p vērtība 0,86).
+
+
+
+## Gradācijas klašu salīdzināšana
+
+Šajā gadījumā Post-Hoc testu var arī neveikt, jo faktoram ir tikai divas gradācijas klases - ja faktora ietekme ir būtiska, tad, attiecīgi, šīs klases būtiski atšķiras.
+
+```{r,comment=NA}
+TukeyHSD(modelis,"gaisma")
+```
