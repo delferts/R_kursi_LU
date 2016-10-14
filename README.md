@@ -5,7 +5,7 @@
 
 * [Ievads darbā ar R un RStudio](/Ievads_R_RStudio)
 * [Pamatstatistiskie testi programmā R](/Pamatstatistiskie_testi_R)
-* RCommander
+* [RCommander](/RCommander)
 * Ievads ggplot2 grafiskajā sistēmā
 
 Katrā nodarbības direktorijā ir pieejama prezentācija kā html fails un izejas R markdown fails .Rmd, kā arī atsevišķs komandu rindu fails konkrētajai tēmai. Direktorijā **Dati** ir pieejami visi datu faili, kas tiek izmantoti nodarbībās.
