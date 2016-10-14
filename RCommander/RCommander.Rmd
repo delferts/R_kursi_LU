@@ -1,0 +1,47 @@
+---
+title: "R Commander"
+subtitle: "R 'klikšķināmā' versija"
+author: "Didzis Elferts"
+output:
+  ioslides_presentation:
+    css: ../Dazadi/style.css
+    highlight: tango
+    widescreen: yes
+---
+
+
+## Kas ir R Commander
+
+* R Commander ir grafiskā saskarne (GUI graphical user interface), kas ļauj veikt pamatstatistisko testus un veidot daļu no attēliem
+
+## R Commander izmantošana
+
+Lai varētu izmantot R Commander, ir jāpalaiž programma R vai RStudio un jāpievieno atbilstošā R pakete
+
+```{r,eval=FALSE}
+if (!require("Rcmdr") )  install.packages("Rcmdr")
+library(Rcmdr)
+```
+
+* Ja šo darbību izpilda R programmā, tad atveras jauns logs, kurā notiek visas darbības
+
+* Ja šo darbību izpilda RStudio, tad rezultāti un paziņojumi rādās RStudio konsolē, nevis atsevišķā logā
+
+
+## R Commander izmantošana
+
+* Ja R Commander logs ir aizvērts, neaizverot pašu R programmu, tad to var vēlreiz palaist ar komandu
+
+```{r,eval=FALSE}
+Commander()
+```
+
+## R Commander izmantošana
+
+Pabeidzot darbu ar R Commander, var saglabāt:
+
+* komandu failu (script file)
+
+* R Markdown failu
+
+* rezultātu failu (output file)
