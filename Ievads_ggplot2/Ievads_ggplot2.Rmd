@@ -150,7 +150,7 @@ ggplot(dati, aes(garums, lapas,color=gaisma,shape=stress)) + geom_point()
 Krāsa un izmērs, kas noteikts visiem punktiem vienāds
 
 ```{r}
-ggplot(mtcars, aes(wt, mpg)) + geom_point(colour = "red", size = 3)
+ggplot(dati, aes(garums, lapas)) + geom_point(colour = "red", size = 3)
 ```
 
 ## geom_bar()
@@ -358,7 +358,7 @@ ggplot(dati,aes(garums, lapas, color=stress)) + geom_point()  +
 
 ## scale_continuous()
 ```{r}
-ggplot(mtcars, aes(x = wt, y = mpg,color=factor(cyl))) + geom_point()
+ggplot(dati,aes(garums, lapas, color=stress)) + geom_point()
 ```
 
 ## scale_continuous()

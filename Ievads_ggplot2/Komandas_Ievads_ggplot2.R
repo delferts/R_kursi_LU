@@ -24,7 +24,7 @@ ggplot(dati, aes(garums, lapas,shape=gaisma)) + geom_point()
 
 ggplot(dati, aes(garums, lapas,color=gaisma,shape=stress)) + geom_point()
 
-ggplot(mtcars, aes(wt, mpg)) + geom_point(colour = "red", size = 3)
+ggplot(dati,aes(garums, lapas)) + geom_point(colour = "red", size = 3)
 
 ggplot(dati, aes(stress))+geom_bar()
 
@@ -78,7 +78,7 @@ ggplot(dati,aes(garums, lapas, color=stress)) + geom_point()  +
       scale_colour_manual("Leģendas nosaukus",values = c("yellow","brown"),
                           labels=c("Stress bija","Stress nebija"))
 
-ggplot(mtcars, aes(x = wt, y = mpg,color=factor(cyl))) + geom_point()
+ggplot(dati,aes(garums, lapas, color=stress)) + geom_point()
 
 ggplot(dati,aes(garums, lapas, color=stress)) + geom_point() + 
       scale_x_continuous("Auga garums (cm)")
